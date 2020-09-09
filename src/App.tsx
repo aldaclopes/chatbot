@@ -1,24 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
+
+import axios from 'axios';
+import aws4 from 'aws4';
+
+// Tutorial usado: 
+// https://medium.com/@joshua.a.kahn/calling-amazon-api-gateway-authenticated-methods-with-axios-and-aws4-6eeda1aa8696
+
 
 function App() {
+
+
+  useEffect(() => {
+    let request = {
+      host: '',
+      method: 'POST',
+      url: '',
+      body: '{"inputText": "prazo"}',
+      headers: {
+        'content-type': 'application/json',
+      }
+    }
+
+    let signedRequest = aws4.sign(request,
+      {
+        secretAccessKey: '',
+        accessKeyId: '',
+      })
+
+    delete signedRequest.headers['Host']
+    delete signedRequest.headers['Content-Length']
+
+    console.log(signedRequest);
+
+    axios(signedRequest).then((response) => {
+      console.log(response);
+    }
+    );
+  }, []);
+
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
     </div>
   );
 }
